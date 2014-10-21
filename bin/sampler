@@ -1,0 +1,27 @@
+#!/usr/bin/env php
+<?php
+
+// if you don't want to setup permissions the proper way, just uncomment the following PHP line
+// read http://symfony.com/doc/current/book/installation.html#configuration-and-setup for more information
+//umask(0000);
+
+
+set_time_limit(0);
+
+require_once __DIR__ . '/../vendor/autoload.php';
+
+use Symfony\Component\Console\Input\ArgvInput;
+
+$input = new ArgvInput();
+
+$url      = $input->getFirstArgument();
+$in       = $input->getParameterOption(['--input', '-i']);
+$length   = $input->getParameterOption(['--length', '-k'], 5);
+
+$iterator = empty($url) ? empty($input) ? new \Iterator\StreamIterator('php://stdin') :
+                                          new ArrayIterator(str_split($in))
+            : new \Iterator\StreamIterator($url);
+
+$sampler = new \Sampler\ReservoirSampler($iterator);
+
+echo implode('', $sampler->getSample($length));
