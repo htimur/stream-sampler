@@ -5,23 +5,33 @@
 // read http://symfony.com/doc/current/book/installation.html#configuration-and-setup for more information
 //umask(0000);
 
+const DEFAULT_SOURCE_LENGTH = 1000;
 
 set_time_limit(0);
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
 use Symfony\Component\Console\Input\ArgvInput;
+use Iterator\StreamIterator;
 
-$input = new ArgvInput();
+function getRandomString($length)
+{
+    return base64_encode(openssl_random_pseudo_bytes($length));
+}
 
-$url      = $input->getFirstArgument();
-$in       = $input->getParameterOption(['--input', '-i']);
-$length   = $input->getParameterOption(['--length', '-k'], 5);
+$input  = new ArgvInput();
+$in     = $input->getParameterOption(['--input', '-i']);
+$length = $input->getParameterOption(['--length', '-k'], 5);
+$random = $input->hasParameterOption(['--random', '-r']);
 
-$iterator = empty($url) ? empty($input) ? new \Iterator\StreamIterator('php://stdin') :
-                                          new ArrayIterator(str_split($in))
-            : new \Iterator\StreamIterator($url);
+if ($random) {
+    $iterator = new ArrayIterator(str_split(getRandomString(DEFAULT_SOURCE_LENGTH)));
+} else {
+    $iterator = filter_var($in, FILTER_VALIDATE_URL) === false ?
+        empty($in) ? new StreamIterator('php://stdin') : new ArrayIterator(str_split($in))
+        : new StreamIterator($in);
+}
 
-$sampler = new \Sampler\ReservoirSampler($iterator);
+$sampler = new Sampler\ReservoirSampler($iterator);
 
-echo implode('', $sampler->getSample($length));
+echo implode('', $sampler->getSample($length)), "\n";
