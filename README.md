@@ -7,6 +7,7 @@ Stream sampler that picks a random (representative) sample of size k from a stre
 > Reservoir sampling is a family of randomized algorithms for randomly choosing a sample of k items from a list S containing n items, where n is either a very large or unknown number. Typically n is large enough that the list doesn't fit into main memory. The most common example was labelled Algorithm R by Jeffrey Vitter in his paper on the subject. ([© wikipedia](http://en.wikipedia.org/wiki/Reservoir_sampling))
 
 -----
+[![Build Status](https://travis-ci.org/htimur/stream-sampler.svg?branch=master)](https://travis-ci.org/htimur/stream-sampler)
 
 ##Usage
 
