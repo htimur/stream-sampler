@@ -11,6 +11,12 @@ Stream sampler that picks a random (representative) sample of size k from a stre
 
 ##Usage
 
+####Prerequisites
+
+This project needs PHP 5.5+.
+
+It has been tested using PHP5.5, PHP5.6 and HHVM.
+
 ####Parameters
 
 | Name         | Description                 |
